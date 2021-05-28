@@ -1,0 +1,2 @@
+rootProject.name = "AssistForABA"
+include ':app'
