@@ -101,6 +101,15 @@ public class FirstFragment extends Fragment {
 
             }
         });
+        binding.buttonAlarmList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Fragment2に遷移する（サンプル）
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+            }
+        });
     }
 
     @Override
