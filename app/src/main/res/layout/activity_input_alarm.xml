@@ -61,23 +61,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editAlarmText" />
 
-
-    <TextView
-        android:id="@+id/textView_imagePath"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_intoImage" />
-
     <ImageView
         android:id="@+id/imageView_Card"
         android:layout_width="408dp"
         android:layout_height="315dp"
         android:scaleType="fitCenter"
-        app:layout_constraintTop_toBottomOf="@+id/textView_imagePath" />
+        app:layout_constraintTop_toBottomOf="@+id/button_intoImage" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
