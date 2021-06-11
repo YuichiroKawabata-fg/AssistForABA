@@ -10,9 +10,10 @@
 
     <ImageView
         android:id="@+id/listIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="100dp"
         android:layout_margin="10dp"
+        android:scaleType="fitCenter"
         app:srcCompat="@mipmap/ic_launcher_round" />
 
     <TextView

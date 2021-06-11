@@ -166,6 +166,26 @@ public class ImageController {
         return null;
     }
 
+    public static Bitmap getBitmap(Context context , Uri uri){
+        ParcelFileDescriptor pfDescriptor = null;
+        try {
+            pfDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (pfDescriptor != null) {
+            FileDescriptor fileDescriptor = pfDescriptor.getFileDescriptor();
+            Bitmap bmp = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+            try {
+                pfDescriptor.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bmp;
+        }
+        return null;
+    }
+
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();

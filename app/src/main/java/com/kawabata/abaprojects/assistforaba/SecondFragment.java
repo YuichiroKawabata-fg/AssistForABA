@@ -47,18 +47,8 @@ public class SecondFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        Log.d("Life Cycle","secondFragment onCreateView");
-        String testToastMessage = "";
-        ArrayList<ListItem> testList = new ArrayList<ListItem>();
-        testList = loadAlarms();
-        for(ListItem listItem : testList){
-            testToastMessage = testToastMessage + "  " +  listItem.getHour().toString();
-        }
-        Toast.makeText(getActivity(), testToastMessage, Toast.LENGTH_SHORT).show();
-
         binding = FragmentSecondBinding.inflate(inflater, container, false);
         return binding.getRoot();
-
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -71,7 +61,6 @@ public class SecondFragment extends Fragment {
         // use a linear layout manager
         RecyclerView.LayoutManager rLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(rLayoutManager);
-
 
 //新規アクション作成ボタン
         binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +80,7 @@ public class SecondFragment extends Fragment {
         Log.d("Life Cycle", "Fragment-onResume");
         //DBから登録されたアラームの一覧を取得してリサイクルビューのアダプタにセット
         //アラーム登録画面に遷移したあと、アラーム登録語に再描画されるよう、この場所に記載
-        AlarmListAdapter adapter = new AlarmListAdapter(loadAlarms()){
+        AlarmListAdapter adapter = new AlarmListAdapter(getActivity(), loadAlarms()){
             @Override
             protected void onClickedListItem(@NonNull ListItem listItem) {
                 super.onClickedListItem(listItem);
@@ -100,8 +89,7 @@ public class SecondFragment extends Fragment {
                 intent.putExtra(getString(R.string.request_code),EDIT_REQ_CODE);
                 intent.putExtra(getString(R.string.alarm_id),listItem.getAlarmID());
                 startActivity(intent);
-                Toast.makeText(getActivity(), listItem.getHour() + ":" + listItem.getMinitsu(), Toast.LENGTH_SHORT).show();
-            }
+              }
         };
         recyclerView.setAdapter(adapter);
     }
@@ -120,7 +108,7 @@ public class SecondFragment extends Fragment {
 
         try(SQLiteDatabase db = helper.getReadableDatabase()) {
 
-            String[] cols ={"alarmid","name","alarttime"};
+            String[] cols ={"alarmid","name","alarttime","uri"};
 
             Cursor cs = db.query("alarms",cols,null,null,
                     null,null,"alarmid",null);
@@ -130,6 +118,7 @@ public class SecondFragment extends Fragment {
                 item.setAlarmID(cs.getInt(0));
                 item.setAlarmName(cs.getString(1));
                 item.setTime(cs.getString(2));
+                item.setUri(cs.getString(3));
                 data.add(item);
                 eol = cs.moveToNext();
             }

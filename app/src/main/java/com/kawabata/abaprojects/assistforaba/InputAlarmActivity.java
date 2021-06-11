@@ -63,7 +63,6 @@ public class InputAlarmActivity extends AppCompatActivity {
     private TextView textView;
     private ImageView imageView;
     private String strUri;
-    private String imageFileName;
     private File imageFile;
     private Uri uri;
     private Uri registratedUri;
@@ -128,7 +127,7 @@ public class InputAlarmActivity extends AppCompatActivity {
             alarmID = intent.getIntExtra(getString(R.string.alarm_id),-1);
             ListItem item = Util.getAlarmsByID(alarmID, helper);
             editAlarmName.setText(item.getAlarmName());
-            registratedUri = Uri.parse(item.getImageFileName());
+            registratedUri = Uri.parse(item.getUri());
 
             if (currentApiVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
                 timePicker.setHour(Integer.parseInt(item.getHour()));
@@ -201,7 +200,7 @@ public class InputAlarmActivity extends AppCompatActivity {
                             cv.put("name",alarmName);
                             cv.put("alarttime", alarmTime);
                             if(uri != null){
-                                cv.put("imageFileName",imageController.registrationMediaStrage(uri).toString());
+                                cv.put("uri",imageController.registrationMediaStrage(uri).toString());
                                 if(registratedUri != null) {
                                     imageController.deleteImage(
                                             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
@@ -224,7 +223,7 @@ public class InputAlarmActivity extends AppCompatActivity {
                             cv.put("name",alarmName);
                             cv.put("alarttime", alarmTime);
                             if(uri != null){
-                                cv.put("imageFileName",imageController.registrationMediaStrage(uri).toString());
+                                cv.put("uri",imageController.registrationMediaStrage(uri).toString());
                             }
                             requestCode = (int)db.insert("alarms",null,cv);
                         }catch (Exception e){

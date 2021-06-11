@@ -5,7 +5,7 @@ public class ListItem {
     private int alarmID = -1;
     private String alarmName = null;
     private String time = null;
-    private String imageFileName = null;
+    private String uri = null;
 
     public String getAlarmName() {
         return alarmName;
@@ -39,11 +39,11 @@ public class ListItem {
         return alarmID;
     }
 
-    public void setImageFileName(String imageFileName) {
-        this.imageFileName = imageFileName;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
-    public String getImageFileName() {
-        return imageFileName;
+    public String getUri() {
+        return uri;
     }
 }

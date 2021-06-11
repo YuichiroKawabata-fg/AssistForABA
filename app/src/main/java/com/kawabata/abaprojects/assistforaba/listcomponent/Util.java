@@ -27,7 +27,7 @@ public class Util {
         ListItem item = null;
         try(SQLiteDatabase db = helper.getReadableDatabase()) {
 
-            String[] cols ={"alarmid","name","alarttime","imageFileName"};
+            String[] cols ={"alarmid","name","alarttime","uri"};
             String[] params = {String.valueOf(alarmID)};
 
             Cursor cs = db.query("alarms",cols,"alarmid = ?",params,
@@ -37,7 +37,7 @@ public class Util {
             item.setAlarmID(cs.getInt(0));
             item.setAlarmName(cs.getString(1));
             item.setTime(cs.getString(2));
-            item.setImageFileName(cs.getString(3));
+            item.setUri(cs.getString(3));
         }
         return item;
     }
