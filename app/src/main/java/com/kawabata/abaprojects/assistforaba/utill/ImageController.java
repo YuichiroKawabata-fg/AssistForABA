@@ -89,8 +89,8 @@ public class ImageController {
         if(isExternalStorageWritable()) {
 
             ContentValues values = new ContentValues();
-
             String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/"+ this.context.getString(R.string.app_name) + "/" + System.currentTimeMillis() + getFileNameFromUri(uri);
+            File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),this.context.getString(R.string.app_name));
             String fileName = new File(path).getName();
             // コンテンツ クエリの列名
             // ファイル名
@@ -99,18 +99,23 @@ public class ImageController {
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
             //　パスの設定
             values.put(MediaStore.Images.Media.DATA, path);
-            // 書込み時にメディア ファイルに排他的にアクセスする
-            values.put(MediaStore.Images.Media.IS_PENDING, 1);
 
             if (Build.VERSION.SDK_INT >= 29) {
                 final String relativeDir = getRelativeDir(path);
                 values.put(MediaStore.Images.Media.RELATIVE_PATH, relativeDir);
                 values.put(MediaStore.Images.Media.IS_PENDING, true);
+            }else{
+                if (!folder.exists()) {
+                    /* subDirectoryが存在しない場合は作成する。*/
+                    /* 親ディレクトリが存在しない場合は親ディレクトリも作成する。 */
+                    folder.mkdirs();
+                }
             }
 
 
             ContentResolver resolver = this.context.getApplicationContext().getContentResolver();
             Uri collection = getExternalStorageUri(Build.VERSION.SDK_INT);
+            //Uri collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
             Uri item = resolver.insert(collection, values);
 
             //画像を表示 BMPに変換して保存
@@ -121,10 +126,11 @@ public class ImageController {
             }
 
             values.clear();
-            //　排他的にアクセスの解除
-            values.put(MediaStore.Images.Media.IS_PENDING, 0);
-            resolver.update(item, values, null, null);
-
+            if (Build.VERSION.SDK_INT >= 29) {
+                //　排他的にアクセスの解除
+                values.put(MediaStore.Images.Media.IS_PENDING, false);
+                resolver.update(item, values, null, null);
+            }
             return item;
         }
         return null;

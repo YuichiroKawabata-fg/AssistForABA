@@ -91,7 +91,9 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.getTextView().setText(alarmList.get(position).getAlarmName() + "  " + alarmList.get(position).getHour().toString() + ":" + alarmList.get(position).getMinitsu().toString());
-        viewHolder.getImageView().setImageBitmap(ImageController.getBitmap(this.context,Uri.parse(alarmList.get(position).getUri())));
+        if (alarmList.get(position).getUri() != null){
+            viewHolder.getImageView().setImageBitmap(ImageController.getBitmap(this.context,Uri.parse(alarmList.get(position).getUri())));
+        }
     }
 
 
