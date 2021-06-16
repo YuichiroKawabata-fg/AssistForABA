@@ -23,6 +23,13 @@
             android:label="@string/title_activity_input_alarm"
             android:theme="@style/Theme.AssistForABA.NoActionBar" />
 
+        <activity
+            android:name=".AlertDialogActivity"
+            android:theme="@style/Translucent"
+            android:launchMode="singleInstance">
+        </activity>
+
+
         <receiver
             android:name=".AlarmNotification"
             android:enabled="true"

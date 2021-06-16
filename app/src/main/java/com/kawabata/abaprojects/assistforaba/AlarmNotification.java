@@ -61,14 +61,15 @@ public class AlarmNotification extends BroadcastReceiver {
         channel.setSound(defaultSoundUri, null);
         channel.setShowBadge(true);
 
+        //Notificationをタップしたとき、MainActivityへ遷移する
+        Intent notifyIntent  = new Intent(context, AlarmActivity.class);
+        // データを取得
+        int alarmID = intent.getIntExtra("alarm_id",-1);
+        String alarmName = intent.getStringExtra("alarm_name");
+
+        //通知を登録
         if(notificationManager != null){
             notificationManager.createNotificationChannel(channel);
-
-            //Notificationをタップしたとき、MainActivityへ遷移する
-            Intent notifyIntent  = new Intent(context, AlarmActivity.class);
-            // データを取得
-            int alarmID = intent.getIntExtra("alarm_id",-1);
-            String alarmName = intent.getStringExtra("alarm_name");
 
             notifyIntent.putExtra("alarm_id",alarmID);//ここでAlarmIDを渡す
             notifyIntent .setFlags(
@@ -109,8 +110,15 @@ public class AlarmNotification extends BroadcastReceiver {
             // 通知
             notificationManager.notify(R.string.app_name, notification);
 */
+        }
 
-
+        //Dialogを登録
+        Intent intentDialog = new Intent(context, AlertDialogActivity.class);
+        PendingIntent pendingIntentDialog = PendingIntent.getActivity(context, alarmID, intentDialog, 0);
+        try {
+            pendingIntentDialog.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
         }
     }
 }
