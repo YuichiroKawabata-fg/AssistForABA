@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.kawabata.abaprojects.assistforaba.listcomponent.ListItem;
 import com.kawabata.abaprojects.assistforaba.listcomponent.Util;
@@ -96,6 +97,22 @@ public class InputAlarmActivity extends AppCompatActivity {
         //画像登録ボタンを定義
         Button buttonIntoImage = findViewById(R.id.button_intoImage);
 
+        //画像選択ボタンの挙動をセット
+        //ここでファイルエクスプローラをコールする
+        buttonIntoImage.setOnClickListener( v -> {
+            // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file browser.
+            Intent intent_exp = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+            // Filter to only show results that can be "opened", such as a
+            // file (as opposed to a list of contacts or timezones)
+            intent_exp.addCategory(Intent.CATEGORY_OPENABLE);
+
+            // Filter to show only images, using the image MIME data type.
+            // it would be "*/*".
+            intent_exp.setType("*/*");
+
+            startActivityForResult(intent_exp, RESULT_PICK_IMAGEFILE);
+        });
 
         // キャンセルボタンの設定
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarInput);
@@ -108,6 +125,7 @@ public class InputAlarmActivity extends AppCompatActivity {
                 finish();
             }
         });
+
 
         // 保存、削除ボタンの設定
         toolbar.inflateMenu(R.menu.edit_menu);
@@ -153,6 +171,7 @@ public class InputAlarmActivity extends AppCompatActivity {
         int alarmIDForDelete = alarmID;
         
         //ツールバーの挙動設定
+        int finalAlarmID = alarmID;
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 
             @Override
@@ -171,11 +190,6 @@ public class InputAlarmActivity extends AppCompatActivity {
                         hour = timePicker.getCurrentHour();
                         minute = timePicker.getCurrentMinute();
                     }
-
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(System.currentTimeMillis());
-                    calendar.set(Calendar.HOUR_OF_DAY, hour);
-                    calendar.set(Calendar.MINUTE, minute);
 
                     // データ登録 or 更新
                     // TODO DB登録後にエラーが発生した場合の考慮が必要
@@ -233,7 +247,7 @@ public class InputAlarmActivity extends AppCompatActivity {
                     
                     // 参考 https://qiita.com/hiroaki-dev/items/e3149e0be5bfa52d6a51
                     // TODO アラームの設定
-
+                    reservationAlarm(finalAlarmID,alarmName,hour,minute,"");
 
                 }else if(id == MENU_DELETE_ID){
                     //画像削除
@@ -264,20 +278,6 @@ public class InputAlarmActivity extends AppCompatActivity {
         });
 
 
-        buttonIntoImage.setOnClickListener( v -> {
-            // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file browser.
-            Intent intent_exp = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
-            // Filter to only show results that can be "opened", such as a
-            // file (as opposed to a list of contacts or timezones)
-            intent_exp.addCategory(Intent.CATEGORY_OPENABLE);
-
-            // Filter to show only images, using the image MIME data type.
-            // it would be "*/*".
-            intent_exp.setType("*/*");
-
-            startActivityForResult(intent_exp, RESULT_PICK_IMAGEFILE);
-        });
 
 
     }
@@ -302,5 +302,41 @@ public class InputAlarmActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void reservationAlarm(int alarmID,String alarmName, int hour, int minute, String strUri){
+        AlarmManager am;
+        PendingIntent pending;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        //TODO 実際にセットするように戻す
+        //calendar.set(Calendar.HOUR_OF_DAY, hour);
+        //calendar.set(Calendar.MINUTE, minute);
+
+        //まずはサンプル！ 5秒後にアラームが設定されるように決め打ち
+        calendar.add(Calendar.SECOND, 5);
+        //ブロードキャストレシーバーのIntentコールをおこなう設定（アラーム通知クラスをコールする）
+        Intent intent = new Intent(getApplicationContext(), AlarmNotification.class);
+        intent.putExtra("alarm_id",alarmID);
+        intent.putExtra("alarm_name",alarmName);
+        intent.putExtra("uri",strUri);
+
+        pending = PendingIntent.getBroadcast(
+                getApplicationContext(),alarmID, intent, 0);
+
+        // アラームをセットする
+        am = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        if (am != null) {
+            am.setExact(AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(), pending);
+        }
+
+    }
+
+    private void cancelAlarm(int alarmID){
+
+    }
+
 
 }

@@ -65,8 +65,12 @@ public class AlarmNotification extends BroadcastReceiver {
             notificationManager.createNotificationChannel(channel);
 
             //Notificationをタップしたとき、MainActivityへ遷移する
-            Intent notifyIntent  = new Intent(context, MainActivity.class);
-            notifyIntent .putExtra("hoge", "fuga");
+            Intent notifyIntent  = new Intent(context, AlarmActivity.class);
+            // データを取得
+            int alarmID = intent.getIntExtra("alarm_id",-1);
+            String alarmName = intent.getStringExtra("alarm_name");
+
+            notifyIntent.putExtra("alarm_id",alarmID);//ここでAlarmIDを渡す
             notifyIntent .setFlags(
                     Intent.FLAG_ACTIVITY_CLEAR_TOP  // 起動中のアプリがあってもこちらを優先する
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED  // 起動中のアプリがあってもこちらを優先する
@@ -75,20 +79,20 @@ public class AlarmNotification extends BroadcastReceiver {
             PendingIntent contentIntent =
                     PendingIntent.getActivity(
                             context,
-                            0,
+                            alarmID,
                             notifyIntent ,
                             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context, channelId)
                             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-                            .setContentTitle("Nofitication Title")
-                            .setContentText("Nofitication Message")
-                            .setStyle(new NotificationCompat.BigTextStyle().bigText("Nofitication Message"));
+                            .setContentTitle("アクションの時間になりました。絵カードを見せてあげましょう")
+                            .setContentText(alarmName)
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText(alarmName));
 
             mBuilder.setContentIntent(contentIntent);
-            notificationManager.notify(R.string.app_name, mBuilder.build());
 
+            notificationManager.notify(R.string.app_name + alarmID, mBuilder.build());
 
 
 /*

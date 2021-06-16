@@ -88,6 +88,7 @@ public class SecondFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), InputAlarmActivity.class);
                 intent.putExtra(getString(R.string.request_code),EDIT_REQ_CODE);
                 intent.putExtra(getString(R.string.alarm_id),listItem.getAlarmID());
+                Log.d("ALARMID",String.valueOf(listItem.getAlarmID()));
                 startActivity(intent);
               }
         };
