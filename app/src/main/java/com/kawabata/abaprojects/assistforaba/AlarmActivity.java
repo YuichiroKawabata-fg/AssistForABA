@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,9 +35,6 @@ public class AlarmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
-
-
-
         imageViewForTime = (ImageView)findViewById(R.id.imageView_alarm_time);
         imageViewForCard = (ImageView)findViewById(R.id.imageView_alarm_card);
         textViewForTime= (TextView)findViewById(R.id.textView_alarm_time);
@@ -48,6 +46,7 @@ public class AlarmActivity extends AppCompatActivity {
 
         // データを取得
         alarmID = intent.getIntExtra(getString(R.string.alarm_id),-1);
+        Log.d("AlarmActivity","alarmID=" +String.valueOf(alarmID));
         ListItem item = Util.getAlarmsByID(alarmID, helper);
         textViewForCard.setText(item.getAlarmName());
         registratedUri = Uri.parse(item.getUri());

@@ -1,11 +1,21 @@
 package com.kawabata.abaprojects.assistforaba.listcomponent;
 
-public class ListItem {
+public class ListItem  {
 
     private int alarmID = -1;
     private String alarmName = null;
     private String time = null;
     private String uri = null;
+
+    public ListItem(int alarmID, String alarmName, String time,String uri){
+        this.alarmID = alarmID;
+        this.alarmName = alarmName;
+        this.time = time;
+        this.uri = uri;
+    }
+
+    public ListItem(){
+    }
 
     public String getAlarmName() {
         return alarmName;

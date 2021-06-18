@@ -5,7 +5,9 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="test">Alarm10test</string>
-    <string name="cancel">cancel</string>
+    <string name="cancel">キャンセル</string>
+    <string name="close">閉じる</string>
+    <string name="open_action">表示する</string>
     <string name="new_alarm">新規アクション作成</string>
     <string name="alarmList">リストを取得</string>
     <string name="action_delete">削除</string>

@@ -46,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -205,6 +206,10 @@ public class InputAlarmActivity extends AppCompatActivity {
                     String alarmTime = String.format("%02d", hour) + ":"
                             + String.format("%02d", minute);
 
+                    //登録用のURI文字列
+                    String strUri;
+                    strUri = "";
+
                     if(reqCode == SecondFragment.EDIT_REQ_CODE){
                         // 編集
                         // データ更新処理
@@ -214,7 +219,8 @@ public class InputAlarmActivity extends AppCompatActivity {
                             cv.put("name",alarmName);
                             cv.put("alarttime", alarmTime);
                             if(uri != null){
-                                cv.put("uri",imageController.registrationMediaStrage(uri).toString());
+                                strUri = imageController.registrationMediaStrage(uri).toString();
+                                cv.put("uri",strUri);
                                 if(registratedUri != null) {
                                     imageController.deleteImage(
                                             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
@@ -222,9 +228,16 @@ public class InputAlarmActivity extends AppCompatActivity {
                                                     imageController.getFileNameFromUri(registratedUri));
 
                                 }
+                            }else{
+                                if(registratedUri != null) {
+                                    strUri = registratedUri.toString();
+                                }
                             }
                             String[] params = {String.valueOf(requestCode)};
                             db.update("alarms",cv,"alarmid = ?",params);
+                            ListItem listItem =new ListItem(finalAlarmID,alarmName,alarmTime,strUri);
+                            reservationAlarm(finalAlarmID,alarmName,hour,minute,"",listItem);
+
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -240,14 +253,14 @@ public class InputAlarmActivity extends AppCompatActivity {
                                 cv.put("uri",imageController.registrationMediaStrage(uri).toString());
                             }
                             requestCode = (int)db.insert("alarms",null,cv);
+                            // TODO アラームの設定
                         }catch (Exception e){
                             e.printStackTrace();
                         }
                     }
-                    
-                    // 参考 https://qiita.com/hiroaki-dev/items/e3149e0be5bfa52d6a51
-                    // TODO アラームの設定
-                    reservationAlarm(finalAlarmID,alarmName,hour,minute,"");
+
+
+
 
                 }else if(id == MENU_DELETE_ID){
                     //画像削除
@@ -303,7 +316,7 @@ public class InputAlarmActivity extends AppCompatActivity {
         }
     }
 
-    private void reservationAlarm(int alarmID,String alarmName, int hour, int minute, String strUri){
+    private void reservationAlarm(int alarmID,String alarmName, int hour, int minute, String strUri,ListItem item){
         AlarmManager am;
         PendingIntent pending;
 
@@ -320,6 +333,9 @@ public class InputAlarmActivity extends AppCompatActivity {
         intent.putExtra("alarm_id",alarmID);
         intent.putExtra("alarm_name",alarmName);
         intent.putExtra("uri",strUri);
+        //intent.putExtra("ListItem", item);
+
+        Log.d("InputAlarmActivity","alarmID=" + String.valueOf(alarmID));
 
         pending = PendingIntent.getBroadcast(
                 getApplicationContext(),alarmID, intent, 0);

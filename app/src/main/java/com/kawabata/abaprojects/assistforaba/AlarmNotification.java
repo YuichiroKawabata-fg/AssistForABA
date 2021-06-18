@@ -16,6 +16,8 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import com.kawabata.abaprojects.assistforaba.listcomponent.ListItem;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -61,15 +63,31 @@ public class AlarmNotification extends BroadcastReceiver {
         channel.setSound(defaultSoundUri, null);
         channel.setShowBadge(true);
 
-        //Notificationをタップしたとき、MainActivityへ遷移する
-        Intent notifyIntent  = new Intent(context, AlarmActivity.class);
+       // ListItem listItem = (ListItem) intent.getSerializableExtra("ListItem");
+
         // データを取得
-        int alarmID = intent.getIntExtra("alarm_id",-1);
+        int alarmID = intent.getIntExtra(context.getString((R.string.alarm_id)),-1);
         String alarmName = intent.getStringExtra("alarm_name");
+
+        //Dialogを登録
+        Intent intentDialog = new Intent(context, AlertDialogActivity.class);
+        intentDialog.putExtra(context.getString((R.string.alarm_id)),alarmID);//ここでAlarmIDを渡す
+        PendingIntent pendingIntentDialog = PendingIntent.getActivity(context, 0, intentDialog, 0);
+        try {
+            pendingIntentDialog.send();
+        } catch (PendingIntent.CanceledException e) {
+            e.printStackTrace();
+        }
+
+
+
 
         //通知を登録
         if(notificationManager != null){
             notificationManager.createNotificationChannel(channel);
+
+            //Notificationをタップしたとき、MainActivityへ遷移する
+            Intent notifyIntent  = new Intent(context, AlarmActivity.class);
 
             notifyIntent.putExtra("alarm_id",alarmID);//ここでAlarmIDを渡す
             notifyIntent .setFlags(
@@ -87,38 +105,14 @@ public class AlarmNotification extends BroadcastReceiver {
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context, channelId)
                             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-                            .setContentTitle("アクションの時間になりました。絵カードを見せてあげましょう")
-                            .setContentText(alarmName)
-                            .setStyle(new NotificationCompat.BigTextStyle().bigText(alarmName));
+                            .setContentTitle("アクションの時間になりました。")
+                            .setContentText("alarmID=" + String.valueOf(alarmID))//listItem.getAlarmName())
+                            .setStyle(new NotificationCompat.BigTextStyle().bigText("alarmID=" + String.valueOf(alarmID)));
 
             mBuilder.setContentIntent(contentIntent);
 
             notificationManager.notify(R.string.app_name + alarmID, mBuilder.build());
 
-
-/*
-            Notification notification = new Notification.Builder(context, channelId)
-                    .setContentTitle(title)
-                    // android標準アイコンから
-                    .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-                    .setContentText(message)
-                    .setAutoCancel(true)
-                    .setContentIntent(pendingIntent)
-                    .setWhen(System.currentTimeMillis())
-                    .build();
-
-            // 通知
-            notificationManager.notify(R.string.app_name, notification);
-*/
-        }
-
-        //Dialogを登録
-        Intent intentDialog = new Intent(context, AlertDialogActivity.class);
-        PendingIntent pendingIntentDialog = PendingIntent.getActivity(context, alarmID, intentDialog, 0);
-        try {
-            pendingIntentDialog.send();
-        } catch (PendingIntent.CanceledException e) {
-            e.printStackTrace();
         }
     }
 }
