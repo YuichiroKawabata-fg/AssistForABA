@@ -3,9 +3,11 @@ package com.kawabata.abaprojects.assistforaba.utill;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -14,10 +16,12 @@ import android.provider.MediaStore;
 
 import com.kawabata.abaprojects.assistforaba.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ImageController {
@@ -77,6 +81,7 @@ public class ImageController {
         };
         this.context.getContentResolver().delete(externalStorageUri, selection, selectionArgs);
     }
+
     public Uri registrationMediaStrage(Uri uri){
 
         Bitmap bmp = null;
@@ -172,24 +177,17 @@ public class ImageController {
         return null;
     }
 
-    public static Bitmap getBitmap(Context context , Uri uri){
-        ParcelFileDescriptor pfDescriptor = null;
+    public Bitmap getBitmapFromAsset(String strName)
+    {
+        AssetManager assetManager = context.getAssets();
+        InputStream istr = null;
         try {
-            pfDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
-        } catch (FileNotFoundException e) {
+            istr = assetManager.open(strName);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        if (pfDescriptor != null) {
-            FileDescriptor fileDescriptor = pfDescriptor.getFileDescriptor();
-            Bitmap bmp = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-            try {
-                pfDescriptor.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return bmp;
-        }
-        return null;
+        Bitmap bitmap = BitmapFactory.decodeStream(istr);
+        return bitmap;
     }
 
     /* Checks if external storage is available for read and write */
@@ -204,4 +202,22 @@ public class ImageController {
         return (Environment.MEDIA_MOUNTED.equals(state) ||
                 Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));
     }
+
+    public Bitmap rotateBitmap(Bitmap inImage,int angle){
+        // 回転マトリックス作成（90度回転）
+        Matrix mat = new Matrix();
+        mat.postRotate(angle);
+        // 回転したビットマップを作成
+        Bitmap bmp = Bitmap.createBitmap(inImage, 0, 0, inImage.getWidth(), inImage.getHeight(), mat, true);
+        return bmp;
+    }
+
+    public Uri getImageUri(Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+
 }

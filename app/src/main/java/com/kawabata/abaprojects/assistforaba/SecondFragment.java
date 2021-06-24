@@ -91,6 +91,16 @@ public class SecondFragment extends Fragment {
                 Log.d("ALARMID",String.valueOf(listItem.getAlarmID()));
                 startActivity(intent);
               }
+
+            @Override
+            protected void onClickedViewIcon(@NonNull ListItem listItem) {
+                super.onClickedViewIcon(listItem);
+                Intent intent = new Intent(getActivity(), AlarmActivity.class);
+                intent.putExtra(getString(R.string.alarm_id),listItem.getAlarmID());
+                startActivity(intent);
+            }
+
+
         };
         recyclerView.setAdapter(adapter);
     }

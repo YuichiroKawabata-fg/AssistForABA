@@ -17,8 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:layout_margin="20dp"
-            android:textSize="20dp"
+            android:layout_margin="10dp"
+            android:textSize="50dp"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal" />
 
@@ -28,8 +28,21 @@
             android:layout_height="match_parent"
             tools:srcCompat="@tools:sample/avatars"
             android:scaleType="fitCenter"
+            android:layout_margin="10dp"
             />
     </LinearLayout>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="3dp"
+        android:id="@+id/line_horizontal_center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
+        android:elevation="2dp"
+        android:background="@color/purple_200"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:layout_margin="20dp"
             android:textSize="30dp"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal" />
@@ -54,8 +66,8 @@
             android:scaleType="fitCenter" />
     </LinearLayout>
         <Button
-            android:id="@+id/button"
+            android:id="@+id/button_close_alarm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="@string/close" />
 </LinearLayout>

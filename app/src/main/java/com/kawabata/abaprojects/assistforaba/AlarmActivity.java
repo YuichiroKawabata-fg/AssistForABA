@@ -2,6 +2,7 @@ package com.kawabata.abaprojects.assistforaba;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -10,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,14 +23,15 @@ import com.kawabata.abaprojects.assistforaba.utill.ImageController;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AlarmActivity extends AppCompatActivity {
+public class AlarmActivity extends Activity {
     private DatabaseHelper helper = null;
     private int alarmID;
     private ImageView imageViewForTime;
     private ImageView imageViewForCard;
     private TextView textViewForTime;
     private TextView textViewForCard;
-    private Uri registratedUri;
+    private String clockNName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,33 +52,40 @@ public class AlarmActivity extends AppCompatActivity {
         Log.d("AlarmActivity","alarmID=" +String.valueOf(alarmID));
         ListItem item = Util.getAlarmsByID(alarmID, helper);
         textViewForCard.setText(item.getAlarmName());
-        registratedUri = Uri.parse(item.getUri());
+        textViewForTime.setText(item.getTime());
 
+        //画像ファイル名を２４時表記から１２時間表記に変更
+        if (Integer.valueOf(item.getHour()) == 0){
+            clockNName = "12"+item.getMinitsu();
+        }else if  (Integer.valueOf(item.getHour()) > 21){
+            clockNName = String.valueOf(Integer.valueOf(item.getHour())-12)+item.getMinitsu();
+        }else if( (Integer.valueOf(item.getHour()) > 12)){
+            clockNName = "0"+String.valueOf(Integer.valueOf(item.getHour())-12)+item.getMinitsu();
+        }else{
+            clockNName = item.getHour()+item.getMinitsu();
+        }
+        ImageController imageController = new ImageController(this);
 
         //時間の表示
-        Bitmap image = getBitmapFromAsset("1200.png");
+        Bitmap image = imageController.getBitmapFromAsset("clock/"+clockNName+ ".gif");
         imageViewForTime.setImageBitmap(image);
 
         //絵カードの表示
-        ImageController imageController = new ImageController(this);
-        imageViewForCard.setImageBitmap(imageController.getBitmap(this.registratedUri));
+        if (item.getUri()!= null) {
+            imageViewForCard.setImageBitmap(imageController.getBitmap(Uri.parse(item.getUri())));
+        }else{
+            imageViewForCard.setImageBitmap(imageController.getBitmapFromAsset("no_image_square.jpg"));
+        }
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(R.string.app_name+ alarmID);
 
+        //Closeボタンを定義
+        Button cancelButton = findViewById(R.id.button_close_alarm);
+        cancelButton.setOnClickListener( v -> {
+            finish();
+        });
+
     }
 
-
-    private Bitmap getBitmapFromAsset(String strName)
-    {
-        AssetManager assetManager = getAssets();
-        InputStream istr = null;
-        try {
-            istr = assetManager.open(strName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Bitmap bitmap = BitmapFactory.decodeStream(istr);
-        return bitmap;
-    }
 }

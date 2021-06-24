@@ -72,7 +72,8 @@ public class AlarmNotification extends BroadcastReceiver {
         //Dialogを登録
         Intent intentDialog = new Intent(context, AlertDialogActivity.class);
         intentDialog.putExtra(context.getString((R.string.alarm_id)),alarmID);//ここでAlarmIDを渡す
-        PendingIntent pendingIntentDialog = PendingIntent.getActivity(context, 0, intentDialog, 0);
+        //固有のDialogにするため、リクエストコードをalarmID*1000に設定。*1000をしているのはNotificationとの重複を避けるため
+        PendingIntent pendingIntentDialog = PendingIntent.getActivity(context, alarmID*1000, intentDialog, 0);
         try {
             pendingIntentDialog.send();
         } catch (PendingIntent.CanceledException e) {
@@ -105,7 +106,7 @@ public class AlarmNotification extends BroadcastReceiver {
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context, channelId)
                             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-                            .setContentTitle("アクションの時間になりました。")
+                            .setContentTitle("アクションの時間になりました！")
                             .setContentText("alarmID=" + String.valueOf(alarmID))//listItem.getAlarmName())
                             .setStyle(new NotificationCompat.BigTextStyle().bigText("alarmID=" + String.valueOf(alarmID)));
 

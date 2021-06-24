@@ -1,14 +1,18 @@
 package com.kawabata.abaprojects.assistforaba;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -115,6 +119,7 @@ public class InputAlarmActivity extends AppCompatActivity {
             startActivityForResult(intent_exp, RESULT_PICK_IMAGEFILE);
         });
 
+
         // キャンセルボタンの設定
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarInput);
         toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp);
@@ -130,6 +135,7 @@ public class InputAlarmActivity extends AppCompatActivity {
 
         // 保存、削除ボタンの設定
         toolbar.inflateMenu(R.menu.edit_menu);
+
         // 新規 or 編集を取得
         Intent intent = getIntent();
         //この部分で編集する必要がある科を判断する
@@ -139,14 +145,12 @@ public class InputAlarmActivity extends AppCompatActivity {
         // 編集モード
         if(reqCode == SecondFragment.EDIT_REQ_CODE){
             // 削除ボタンを追加する
-            Menu menu = toolbar.getMenu();
-            menu.add(0,MENU_DELETE_ID,2,R.string.action_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            toolbar.getMenu().findItem(R.id.action_delete).setVisible(true);
 
             // 編集前のデータを取得
             alarmID = intent.getIntExtra(getString(R.string.alarm_id),-1);
             ListItem item = Util.getAlarmsByID(alarmID, helper);
             editAlarmName.setText(item.getAlarmName());
-            registratedUri = Uri.parse(item.getUri());
 
             if (currentApiVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
                 timePicker.setHour(Integer.parseInt(item.getHour()));
@@ -156,9 +160,10 @@ public class InputAlarmActivity extends AppCompatActivity {
                 timePicker.setCurrentMinute(Integer.parseInt(item.getMinitsu()));
             }
 
-            //登録画像を表示
-            if (registratedUri !=null) {
+            //登録されている画像を表示
+            if (item.getUri() !=null) {
                 //画像登録ボタンのテキストを変更
+                registratedUri = Uri.parse(item.getUri());
                 buttonIntoImage.setText("絵カード変更");
                 imageView.setImageBitmap(imageController.getBitmap(registratedUri));
             }
@@ -179,7 +184,7 @@ public class InputAlarmActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 int id = item.getItemId();
                 //保存ボタン
-                if (id ==  R.id.action_save) {
+                if (id ==  R.id.action_save || id == R.id.action_demo) {
                     // アラーム設定処理
                     // 設定時刻を取得
                     int hour;
@@ -193,7 +198,6 @@ public class InputAlarmActivity extends AppCompatActivity {
                     }
 
                     // データ登録 or 更新
-                    // TODO DB登録後にエラーが発生した場合の考慮が必要
                     int requestCode = -1;
 
                     // アラーム名の設定
@@ -206,10 +210,6 @@ public class InputAlarmActivity extends AppCompatActivity {
                     String alarmTime = String.format("%02d", hour) + ":"
                             + String.format("%02d", minute);
 
-                    //登録用のURI文字列
-                    String strUri;
-                    strUri = "";
-
                     if(reqCode == SecondFragment.EDIT_REQ_CODE){
                         // 編集
                         // データ更新処理
@@ -220,7 +220,6 @@ public class InputAlarmActivity extends AppCompatActivity {
                             cv.put("alarttime", alarmTime);
                             if(uri != null){
                                 strUri = imageController.registrationMediaStrage(uri).toString();
-                                cv.put("uri",strUri);
                                 if(registratedUri != null) {
                                     imageController.deleteImage(
                                             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
@@ -233,11 +232,10 @@ public class InputAlarmActivity extends AppCompatActivity {
                                     strUri = registratedUri.toString();
                                 }
                             }
+                            cv.put("uri",strUri);
                             String[] params = {String.valueOf(requestCode)};
                             db.update("alarms",cv,"alarmid = ?",params);
-                            ListItem listItem =new ListItem(finalAlarmID,alarmName,alarmTime,strUri);
-                            reservationAlarm(finalAlarmID,alarmName,hour,minute,"",listItem);
-
+                            reservationAlarm(finalAlarmID,alarmName,hour,minute,"");
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -252,46 +250,72 @@ public class InputAlarmActivity extends AppCompatActivity {
                             if(uri != null){
                                 cv.put("uri",imageController.registrationMediaStrage(uri).toString());
                             }
-                            requestCode = (int)db.insert("alarms",null,cv);
                             // TODO アラームの設定
+                            reservationAlarm((int)db.insert("alarms",null,cv),alarmName,hour,minute,"");
                         }catch (Exception e){
                             e.printStackTrace();
                         }
                     }
 
+                    retnIntent = new Intent();
+                    setResult(RESULT_OK, retnIntent);
+                    finish();
 
+                }else if (id ==  R.id.action_delete) {
 
+                    new AlertDialog.Builder(InputAlarmActivity.this)
+                            .setTitle("確認")
+                            .setMessage("本当に削除しますか？")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //画像削除
+                                    if(registratedUri != null) {
+                                        imageController.deleteImage(
+                                                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
+                                                        "/"+ getString(R.string.app_name) + "/" +
+                                                        imageController.getFileNameFromUri(registratedUri));
 
-                }else if(id == MENU_DELETE_ID){
-                    //画像削除
-                    if(registratedUri != null) {
-                        imageController.deleteImage(
-                                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
-                                        "/"+ getString(R.string.app_name) + "/" +
-                                        imageController.getFileNameFromUri(registratedUri));
+                                    }
+                                    // データ削除処理
+                                    try(SQLiteDatabase db = helper.getWritableDatabase()){
+                                        String[] params = {String.valueOf(alarmIDForDelete)};
+                                        db.delete("alarms","alarmid = ?",params);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                    //削除メッセージ
+                                    Toast.makeText(InputAlarmActivity.this,R.string.action_delete_message,Toast.LENGTH_SHORT).show();
 
-                    }
-
-                    // データ削除処理
-                    try(SQLiteDatabase db = helper.getWritableDatabase()){
-                        String[] params = {String.valueOf(alarmIDForDelete)};
-                        db.delete("alarms","alarmid = ?",params);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    //TODO 削除メッセージ
-                    //Toast.makeText(InputAlarmActivity.this,R.string.alarm_delete_msg,Toast.LENGTH_SHORT).show();
+                                    retnIntent = new Intent();
+                                    setResult(RESULT_OK, retnIntent);
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
                 }
-
-                retnIntent = new Intent();
-                setResult(RESULT_OK, retnIntent);
-                finish();
                 return true;
             }
         });
 
-
-
+        //画像回転ボタンの挙動を定義
+        Button cancelButton = findViewById(R.id.button_rotate_image);
+        cancelButton.setOnClickListener( v -> {
+            Bitmap bitmap;
+            Bitmap rotatedBitmap;
+            if(uri != null){
+                bitmap = imageController.getBitmap(uri);
+                rotatedBitmap = imageController.rotateBitmap(bitmap,90);
+                imageView.setImageBitmap(rotatedBitmap);
+                uri = imageController.getImageUri(rotatedBitmap);
+            }else if(registratedUri != null) {
+                bitmap = imageController.getBitmap(registratedUri);
+                rotatedBitmap = imageController.rotateBitmap(bitmap,90);
+                imageView.setImageBitmap(rotatedBitmap);
+                registratedUri = imageController.getImageUri(rotatedBitmap);
+            }
+        });
 
     }
 
@@ -316,7 +340,7 @@ public class InputAlarmActivity extends AppCompatActivity {
         }
     }
 
-    private void reservationAlarm(int alarmID,String alarmName, int hour, int minute, String strUri,ListItem item){
+    private void reservationAlarm(int alarmID,String alarmName, int hour, int minute, String strUri){
         AlarmManager am;
         PendingIntent pending;
 

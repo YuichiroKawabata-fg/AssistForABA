@@ -16,13 +16,49 @@
         android:scaleType="fitCenter"
         app:srcCompat="@mipmap/ic_launcher_round" />
 
-    <TextView
-        android:id="@+id/listTxt"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/alarm_list_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="TextView"
+            android:textSize="30dp" />
+
+        <TextView
+            android:id="@+id/textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_weight="0.1"
+            android:text="@string/action_title"
+            android:textSize="10dp" />
+        
+        <TextView
+            android:id="@+id/alarm_list_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="TextView"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/viewIcon"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
         android:gravity="center"
-        android:text="TextView"
-        android:textSize="30sp" />
+        android:scaleType="fitCenter"
+        app:srcCompat="@mipmap/view" />
+
 
 </LinearLayout>

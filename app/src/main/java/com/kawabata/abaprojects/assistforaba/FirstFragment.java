@@ -41,6 +41,7 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        /*Alarm Testコード
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,11 +102,11 @@ public class FirstFragment extends Fragment {
 
             }
         });
+         */
         binding.buttonAlarmList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //Fragment2に遷移する（サンプル）
+                //アクション一覧に遷移する
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }

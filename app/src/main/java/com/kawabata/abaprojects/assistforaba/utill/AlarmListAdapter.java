@@ -4,16 +4,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.annotation.NonNull;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kawabata.abaprojects.assistforaba.AlarmActivity;
 import com.kawabata.abaprojects.assistforaba.R;
 import com.kawabata.abaprojects.assistforaba.listcomponent.ListItem;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 
@@ -22,25 +30,37 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
     private final ArrayList<ListItem> alarmList;
     private final Context context;
 
+
+
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        private final TextView textViewAlarmName;
+        private final TextView textViewAlarmTime;
         private final ImageView imageView;
+        private final ImageView viewIcon;
 
         public ViewHolder(View view) {
             super(view);
-            textView = view.findViewById(R.id.listTxt);
+            textViewAlarmName = view.findViewById(R.id.alarm_list_name);
+            textViewAlarmTime = view.findViewById(R.id.alarm_list_time);
             imageView = view.findViewById(R.id.listIcon);
+            viewIcon = view.findViewById(R.id.viewIcon);
         }
 
-        public TextView getTextView(){
-            return textView;
+        public TextView getTextViewAlarmName(){
+            return textViewAlarmName;
+        }
+        public TextView getTextViewAlarmTime(){
+            return textViewAlarmTime;
         }
         public ImageView getImageView(){
             return imageView;
+        }
+        public ImageView getViewIcon(){
+            return viewIcon;
         }
 
     }
@@ -61,6 +81,11 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
     protected void onClickedListItem(@NonNull ListItem listItem) {
     }
 
+    // タップされたときに呼び出されるメソッドを定義
+    protected void onClickedViewIcon(ListItem listItem) {
+    }
+
+
 
     // Create new views (invoked by the layout manager)
     @NonNull
@@ -80,7 +105,6 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
             }
         });
 
-
         return holder;
     }
 
@@ -90,10 +114,19 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setText(alarmList.get(position).getAlarmName() + "  " + alarmList.get(position).getHour().toString() + ":" + alarmList.get(position).getMinitsu().toString());
-        if (alarmList.get(position).getUri() != null){
-            viewHolder.getImageView().setImageBitmap(ImageController.getBitmap(this.context,Uri.parse(alarmList.get(position).getUri())));
+        ImageController imageController = new ImageController(this.context);
+        viewHolder.getTextViewAlarmName().setText(alarmList.get(position).getAlarmName());
+        viewHolder.getTextViewAlarmTime().setText(alarmList.get(position).getTime());
+        if (alarmList.get(position).getUri() != null) {
+            viewHolder.getImageView().setImageBitmap(imageController.getBitmap(Uri.parse(alarmList.get(position).getUri())));
+        } else{
+            viewHolder.getImageView().setImageBitmap(imageController.getBitmapFromAsset("no_image_square.jpg"));
         }
+
+        //絵カード表示
+        viewHolder.getViewIcon().setOnClickListener( v -> {
+            onClickedViewIcon(alarmList.get(position));
+        });
     }
 
 
@@ -102,4 +135,5 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
     public int getItemCount() {
         return alarmList.size();
     }
+
 }

@@ -2,8 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_save"
-        android:title="SAVE"
+        android:id="@+id/action_demo"
+        android:title="デモ(10秒後に通知)"
         android:orderInCategory="1"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_save"
+        android:title="@string/action_save"
+        android:orderInCategory="1"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_delete"
+        android:title="@string/action_delete"
+        android:orderInCategory="1"
+        android:visible="false"
         app:showAsAction="always" />
 </menu>

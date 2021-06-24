@@ -43,11 +43,15 @@ public class AlarmDialogFragment extends DialogFragment {
         Log.d("AlarmDialogFragment","alarmID=" + String.valueOf(alarmID));
         ListItem item = Util.getAlarmsByID(alarmID, helper);
         textViewForCard.setText(item.getAlarmName());
-        registratedUri = Uri.parse(item.getUri());
 
         //絵カードの表示
         ImageController imageController = new ImageController(getActivity());
-        imageViewForCard.setImageBitmap(imageController.getBitmap(this.registratedUri));
+        //絵カードの表示
+        if (item.getUri()!= null) {
+            imageViewForCard.setImageBitmap(imageController.getBitmap(Uri.parse(item.getUri())));
+        }else{
+            imageViewForCard.setImageBitmap(imageController.getBitmapFromAsset("no_image_square.jpg"));
+        }
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
