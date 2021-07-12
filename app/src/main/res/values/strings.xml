@@ -8,6 +8,7 @@
     <string name="cancel">キャンセル</string>
     <string name="close">閉じる</string>
     <string name="action_title">アクション名</string>
+    <string name="card_regist">絵カード登録</string>
     <string name="open_action">表示する</string>
     <string name="new_alarm">新規アクション作成</string>
     <string name="alarmList">アクション一覧</string>
@@ -22,4 +23,11 @@
     <string name="title_activity_alarm">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="sunday">日</string>
+    <string name="monday">月</string>
+    <string name="tuesday">火</string>
+    <string name="wednesday">水</string>
+    <string name="thursday">木</string>
+    <string name="friday">金</string>
+    <string name="saturday">土</string>
 </resources>

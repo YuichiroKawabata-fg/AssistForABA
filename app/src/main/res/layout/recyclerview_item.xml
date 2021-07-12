@@ -49,6 +49,119 @@
             android:text="TextView"
             android:textSize="20dp" />
 
+        <LinearLayout
+            android:id="@+id/week_textbox_lauout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textView_sunday"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/red"
+                    android:background="@drawable/frame_week_unchecked"
+                    android:text="@string/sunday" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textView_monday"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/frame_week_unchecked"
+                    android:text="@string/monday" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textView_tuesday"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/frame_week_unchecked"
+                    android:text="@string/tuesday" />
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textView_wednesday"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/frame_week_unchecked"
+                    android:text="@string/wednesday" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textView_thursday"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/frame_week_unchecked"
+                    android:text="@string/thursday" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textView_friday"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:gravity="center_horizontal"
+                    android:background="@drawable/frame_week_unchecked"
+                    android:text="@string/friday" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textView_saturday"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/bule"
+                    android:background="@drawable/frame_week_unchecked"
+                    android:text="@string/saturday" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <ImageView

@@ -35,6 +35,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarInput" />
 
+    <LinearLayout
+        android:id="@+id/week_checkbox_lauout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/time_picker">
+
+        <CheckBox
+            android:id="@+id/checkBox_sunday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/red"
+            android:text="@string/sunday" />
+        <CheckBox
+            android:id="@+id/checkBox_monday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/monday" />
+        <CheckBox
+            android:id="@+id/checkBox_tuesday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tuesday" />
+        <CheckBox
+            android:id="@+id/checkBox_wednesday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/wednesday" />
+        <CheckBox
+            android:id="@+id/checkBox_thursday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/thursday" />
+        <CheckBox
+            android:id="@+id/checkBox_friday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/friday" />
+        <CheckBox
+            android:id="@+id/checkBox_saturday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/bule"
+            android:text="@string/saturday" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/textView_title"
@@ -44,7 +98,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_picker" />
+        app:layout_constraintTop_toBottomOf="@+id/week_lauout" />
 
     <EditText
         android:id="@+id/editAlarmText"
@@ -62,7 +116,7 @@
         android:id="@+id/button_intoImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="絵カード登録"
+        android:text="@string/card_regist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,6 +137,7 @@
         android:layout_height="315dp"
         android:scaleType="fitCenter"
         app:layout_constraintTop_toBottomOf="@+id/button_intoImage" />
+
 
 
 
