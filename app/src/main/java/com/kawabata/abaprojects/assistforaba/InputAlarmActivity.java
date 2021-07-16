@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -74,6 +75,15 @@ public class InputAlarmActivity extends AppCompatActivity {
     private Uri registratedUri;
     private ImageController imageController;
 
+    private CheckBox checkSunday = null;
+    private CheckBox checkMonday = null;
+    private CheckBox checkTuesday = null;
+    private CheckBox checkWednesday = null;
+    private CheckBox checkThursday = null;
+    private CheckBox checkFriday = null;
+    private CheckBox checkSaturday = null;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +99,15 @@ public class InputAlarmActivity extends AppCompatActivity {
         timePicker.setIs24HourView(true);
         // イメージビューを取得
         imageView = findViewById(R.id.imageView_Card);
+
+        //曜日チェックボックスるを取得
+        checkSunday = findViewById(R.id.checkBox_sunday);
+        checkMonday = findViewById(R.id.checkBox_monday);
+        checkTuesday = findViewById(R.id.checkBox_tuesday);
+        checkWednesday = findViewById(R.id.checkBox_wednesday);
+        checkThursday = findViewById(R.id.checkBox_thursday);
+        checkFriday = findViewById(R.id.checkBox_friday);
+        checkSaturday = findViewById(R.id.checkBox_saturday);
 
         // アラーム名を取得
         editAlarmName = findViewById(R.id.editAlarmText);
@@ -151,6 +170,13 @@ public class InputAlarmActivity extends AppCompatActivity {
             alarmID = intent.getIntExtra(getString(R.string.alarm_id),-1);
             ListItem item = Util.getAlarmsByID(alarmID, helper);
             editAlarmName.setText(item.getAlarmName());
+            checkSunday.setChecked(item.getSunday());
+            checkMonday.setChecked(item.getMonday());
+            checkTuesday.setChecked(item.getTuesday());
+            checkWednesday.setChecked(item.getWednesday());
+            checkThursday.setChecked(item.getThursday());
+            checkFriday.setChecked(item.getFriday());
+            checkSaturday.setChecked(item.getSaturday());
 
             if (currentApiVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
                 timePicker.setHour(Integer.parseInt(item.getHour()));
@@ -218,9 +244,10 @@ public class InputAlarmActivity extends AppCompatActivity {
                             ContentValues cv = new ContentValues();
                             cv.put("name",alarmName);
                             cv.put("alarttime", alarmTime);
-                            if(uri != null){
+
+                            if(uri != null){ //絵カードがすでに登録された場合
                                 strUri = imageController.registrationMediaStrage(uri).toString();
-                                if(registratedUri != null) {
+                                if(registratedUri != null) { //既存の絵カードから書き換えられた場合は、既存の絵カードデータを削除
                                     imageController.deleteImage(
                                             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
                                                     "/"+ getString(R.string.app_name) + "/" +
@@ -228,14 +255,22 @@ public class InputAlarmActivity extends AppCompatActivity {
 
                                 }
                             }else{
-                                if(registratedUri != null) {
+                                if(registratedUri != null) {//絵カードが新たに登録された場合
                                     strUri = registratedUri.toString();
                                 }
                             }
                             cv.put("uri",strUri);
+                            cv.put("sunday",checkSunday.isChecked());
+                            cv.put("monday",checkMonday.isChecked());
+                            cv.put("tuesday",checkTuesday.isChecked());
+                            cv.put("wednesday",checkWednesday.isChecked());
+                            cv.put("thursday",checkThursday.isChecked());
+                            cv.put("friday",checkFriday.isChecked());
+                            cv.put("saturday",checkSaturday.isChecked());
+
                             String[] params = {String.valueOf(requestCode)};
                             db.update("alarms",cv,"alarmid = ?",params);
-                            reservationAlarm(finalAlarmID,alarmName,hour,minute,"");
+                            //reservationAlarm(finalAlarmID,alarmName,hour,minute,"");
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -247,6 +282,14 @@ public class InputAlarmActivity extends AppCompatActivity {
                             ContentValues cv = new ContentValues();
                             cv.put("name",alarmName);
                             cv.put("alarttime", alarmTime);
+                            cv.put("sunday",checkSunday.isChecked());
+                            cv.put("monday",checkMonday.isChecked());
+                            cv.put("tuesday",checkTuesday.isChecked());
+                            cv.put("wednesday",checkWednesday.isChecked());
+                            cv.put("thursday",checkThursday.isChecked());
+                            cv.put("friday",checkFriday.isChecked());
+                            cv.put("saturday",checkSaturday.isChecked());
+
                             if(uri != null){
                                 cv.put("uri",imageController.registrationMediaStrage(uri).toString());
                             }

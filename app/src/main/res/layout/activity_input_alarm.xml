@@ -36,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbarInput" />
 
     <LinearLayout
-        android:id="@+id/week_checkbox_lauout"
+        android:id="@+id/week_lauout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

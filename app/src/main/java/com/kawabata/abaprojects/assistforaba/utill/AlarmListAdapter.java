@@ -1,5 +1,6 @@
 package com.kawabata.abaprojects.assistforaba.utill;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.annotation.NonNull;
 
@@ -8,7 +9,9 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +30,8 @@ import java.util.ArrayList;
 
 public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.ViewHolder> {
 
-    private final ArrayList<ListItem> alarmList;
-    private final Context context;
+    private ArrayList<ListItem> alarmList;
+    private Context context;
 
 
 
@@ -41,6 +44,13 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
         private final TextView textViewAlarmTime;
         private final ImageView imageView;
         private final ImageView viewIcon;
+        private final TextView textViewSunday;
+        private final TextView textViewMonday;
+        private final TextView textViewTuesday;
+        private final TextView textViewWednesday;
+        private final TextView textViewThursday;
+        private final TextView textViewFriday;
+        private final TextView textViewSaturday;
 
         public ViewHolder(View view) {
             super(view);
@@ -48,6 +58,13 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
             textViewAlarmTime = view.findViewById(R.id.alarm_list_time);
             imageView = view.findViewById(R.id.listIcon);
             viewIcon = view.findViewById(R.id.viewIcon);
+            textViewSunday = view.findViewById(R.id.textView_sunday);
+            textViewMonday = view.findViewById(R.id.textView_monday);
+            textViewTuesday = view.findViewById(R.id.textView_tuesday);
+            textViewWednesday = view.findViewById(R.id.textView_wednesday);
+            textViewThursday = view.findViewById(R.id.textView_thursday);
+            textViewFriday = view.findViewById(R.id.textView_friday);
+            textViewSaturday = view.findViewById(R.id.textView_saturday);
         }
 
         public TextView getTextViewAlarmName(){
@@ -62,7 +79,27 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
         public ImageView getViewIcon(){
             return viewIcon;
         }
-
+        public TextView getTextViewSunday(){
+            return textViewSunday;
+        }
+        public TextView getTextViewMonday(){
+            return textViewMonday;
+        }
+        public TextView getTextViewTuesday(){
+            return textViewTuesday;
+        }
+        public TextView getTextViewWednesday(){
+            return textViewWednesday;
+        }
+        public TextView getTextViewThursday(){
+            return textViewThursday;
+        }
+        public TextView getTextViewFriday(){
+            return textViewFriday;
+        }
+        public TextView getTextViewSaturday(){
+            return textViewSaturday;
+        }
     }
 
     /**
@@ -123,7 +160,31 @@ public class AlarmListAdapter  extends RecyclerView.Adapter<AlarmListAdapter.Vie
             viewHolder.getImageView().setImageBitmap(imageController.getBitmapFromAsset("no_image_square.jpg"));
         }
 
-        //絵カード表示
+        Drawable checked = ResourcesCompat.getDrawable(this.context.getResources(), R.drawable.frame_week_checked, null);
+
+        if (alarmList.get(position).getSunday()) {
+            viewHolder.getTextViewSunday().setBackground(checked);
+        }
+        if (alarmList.get(position).getMonday()) {
+            viewHolder.getTextViewMonday().setBackground(checked);
+        }
+        if (alarmList.get(position).getTuesday()) {
+            viewHolder.getTextViewTuesday().setBackground(checked);
+        }
+        if (alarmList.get(position).getWednesday()) {
+            viewHolder.getTextViewWednesday().setBackground(checked);
+        }
+        if (alarmList.get(position).getThursday()) {
+            viewHolder.getTextViewThursday().setBackground(checked);
+        }
+        if (alarmList.get(position).getFriday()) {
+            viewHolder.getTextViewFriday().setBackground(checked);
+        }
+        if (alarmList.get(position).getSaturday()) {
+            viewHolder.getTextViewSaturday().setBackground(checked);
+        }
+
+        //絵カード表示アイコンのリスナー
         viewHolder.getViewIcon().setOnClickListener( v -> {
             onClickedViewIcon(alarmList.get(position));
         });

@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.kawabata.abaprojects.assistforaba.AlarmNotification;
 
@@ -27,12 +28,10 @@ public class Util {
     // アラームのデータを取得
     public static ListItem getAlarmsByID(int alarmID, SQLiteOpenHelper helper){
 
-        ArrayList<ListItem> data = new ArrayList<>();
-
         ListItem item = null;
         try(SQLiteDatabase db = helper.getReadableDatabase()) {
 
-            String[] cols ={"alarmid","name","alarttime","uri"};
+            String[] cols ={"alarmid","name","alarttime","uri","sunday","monday","tuesday","wednesday","thursday","friday","saturday"};
             String[] params = {String.valueOf(alarmID)};
 
             Cursor cs = db.query("alarms",cols,"alarmid = ?",params,
@@ -43,8 +42,53 @@ public class Util {
             item.setAlarmName(cs.getString(1));
             item.setTime(cs.getString(2));
             item.setUri(cs.getString(3));
+            item.setSunday(stringToBoolean(cs.getString(4)));
+            item.setMonday(stringToBoolean(cs.getString(5)));
+            item.setTuesday(stringToBoolean(cs.getString(6)));
+            item.setWednesday(stringToBoolean(cs.getString(7)));
+            item.setThursday(stringToBoolean(cs.getString(8)));
+            item.setFriday(stringToBoolean(cs.getString(9)));
+            item.setSaturday(stringToBoolean(cs.getString(10)));
+
+
         }
         return item;
+    }
+    public static ArrayList<ListItem> getAlarmList(SQLiteOpenHelper helper){
+
+        ArrayList<ListItem> data = new ArrayList<>();
+        try(SQLiteDatabase db = helper.getReadableDatabase()) {
+            String[] cols = {"alarmid", "name", "alarttime", "uri", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+            Cursor cs = db.query("alarms",cols,null,null,
+                    null,null,"alarmid",null);
+
+            boolean eol = cs.moveToFirst();
+            while (eol) {
+                ListItem item = new ListItem();
+                item.setAlarmID(cs.getInt(0));
+                item.setAlarmName(cs.getString(1));
+                item.setTime(cs.getString(2));
+                item.setUri(cs.getString(3));
+                item.setSunday(stringToBoolean(cs.getString(4)));
+                item.setMonday(stringToBoolean(cs.getString(5)));
+                item.setTuesday(stringToBoolean(cs.getString(6)));
+                item.setWednesday(stringToBoolean(cs.getString(7)));
+                item.setThursday(stringToBoolean(cs.getString(8)));
+                item.setFriday(stringToBoolean(cs.getString(9)));
+                item.setSaturday(stringToBoolean(cs.getString(10)));
+                data.add(item);
+                eol = cs.moveToNext();
+            }
+        }
+        return data;
+    }
+
+
+    private static Boolean stringToBoolean(String str){
+        if(str != null){
+            if(str.equals("1")) return true;
+        }
+        return false;
     }
 
     // アラームをセット

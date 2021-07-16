@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kawabata.abaprojects.assistforaba.databinding.FragmentSecondBinding;
 import com.kawabata.abaprojects.assistforaba.listcomponent.ListItem;
+import com.kawabata.abaprojects.assistforaba.listcomponent.Util;
 import com.kawabata.abaprojects.assistforaba.utill.AlarmListAdapter;
 import com.kawabata.abaprojects.assistforaba.utill.DatabaseHelper;
 
@@ -48,6 +49,8 @@ public class SecondFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         binding = FragmentSecondBinding.inflate(inflater, container, false);
+        // ヘルパーの準備
+        helper = DatabaseHelper.getInstance(getActivity());
         return binding.getRoot();
     }
 
@@ -80,7 +83,7 @@ public class SecondFragment extends Fragment {
         Log.d("Life Cycle", "Fragment-onResume");
         //DBから登録されたアラームの一覧を取得してリサイクルビューのアダプタにセット
         //アラーム登録画面に遷移したあと、アラーム登録語に再描画されるよう、この場所に記載
-        AlarmListAdapter adapter = new AlarmListAdapter(getActivity(), loadAlarms()){
+        AlarmListAdapter adapter = new AlarmListAdapter(getActivity(), Util.getAlarmList(helper)){
             @Override
             protected void onClickedListItem(@NonNull ListItem listItem) {
                 super.onClickedListItem(listItem);
@@ -111,30 +114,5 @@ public class SecondFragment extends Fragment {
         binding = null;
     }
 
-
-    private ArrayList<ListItem> loadAlarms(){
-        helper = DatabaseHelper.getInstance(getActivity());
-
-        ArrayList<ListItem> data = new ArrayList<>();
-
-        try(SQLiteDatabase db = helper.getReadableDatabase()) {
-
-            String[] cols ={"alarmid","name","alarttime","uri"};
-
-            Cursor cs = db.query("alarms",cols,null,null,
-                    null,null,"alarmid",null);
-            boolean eol = cs.moveToFirst();
-            while (eol){
-                ListItem item = new ListItem();
-                item.setAlarmID(cs.getInt(0));
-                item.setAlarmName(cs.getString(1));
-                item.setTime(cs.getString(2));
-                item.setUri(cs.getString(3));
-                data.add(item);
-                eol = cs.moveToNext();
-            }
-        }
-        return data;
-    }
 
 }

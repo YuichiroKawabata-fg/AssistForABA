@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE alarms (alarmid integer PRIMARY KEY, name text , alarttime text ,uri text);");
+        db.execSQL("CREATE TABLE alarms (alarmid integer PRIMARY KEY, name text , alarttime text ,uri text,sunday boolean,monday boolean,tuesday boolean,wednesday boolean,thursday boolean,friday boolean,saturday boolean);");
     }
 
     @Override

@@ -6,13 +6,14 @@ public class ListItem  {
     private String alarmName = null;
     private String time = null;
     private String uri = null;
+    private Boolean sunday = false;
+    private Boolean monday = false;
+    private Boolean tuesday = false;
+    private Boolean wednesday = false;
+    private Boolean thursday = false;
+    private Boolean friday = false;
+    private Boolean saturday = false;
 
-    public ListItem(int alarmID, String alarmName, String time,String uri){
-        this.alarmID = alarmID;
-        this.alarmName = alarmName;
-        this.time = time;
-        this.uri = uri;
-    }
 
     public ListItem(){
     }
@@ -55,5 +56,61 @@ public class ListItem  {
 
     public String getUri() {
         return uri;
+    }
+
+    public Boolean getSunday() {
+        return sunday;
+    }
+
+    public void setSunday(Boolean sunday) {
+        this.sunday = sunday;
+    }
+
+    public Boolean getMonday() {
+        return monday;
+    }
+
+    public void setMonday(Boolean monday) {
+        this.monday = monday;
+    }
+
+    public Boolean getTuesday() {
+        return tuesday;
+    }
+
+    public void setTuesday(Boolean tuesday) {
+        this.tuesday = tuesday;
+    }
+
+    public Boolean getWednesday() {
+        return wednesday;
+    }
+
+    public void setWednesday(Boolean wednesday) {
+        this.wednesday = wednesday;
+    }
+
+    public Boolean getThursday() {
+        return thursday;
+    }
+
+    public void setThursday(Boolean thursday) {
+        this.thursday = thursday;
+    }
+
+    public Boolean getFriday() {
+        return friday;
+    }
+
+    public void setFriday(Boolean friday) {
+        this.friday = friday;
+    }
+
+    public Boolean getSaturday() {
+        return saturday;
+    }
+
+    public void setSaturday(Boolean saturday) {
+        this.saturday = saturday;
     }
 }
