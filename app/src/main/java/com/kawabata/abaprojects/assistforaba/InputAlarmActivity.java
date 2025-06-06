@@ -270,7 +270,10 @@ public class InputAlarmActivity extends AppCompatActivity {
 
                             String[] params = {String.valueOf(requestCode)};
                             db.update("alarms",cv,"alarmid = ?",params);
-                            //reservationAlarm(finalAlarmID,alarmName,hour,minute,"");
+
+                            // 既存アラームをキャンセルして再登録
+                            cancelAlarm(finalAlarmID);
+                            reservationAlarm(finalAlarmID,alarmName,hour,minute,strUri);
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -291,10 +294,12 @@ public class InputAlarmActivity extends AppCompatActivity {
                             cv.put("saturday",checkSaturday.isChecked());
 
                             if(uri != null){
-                                cv.put("uri",imageController.registrationMediaStrage(uri).toString());
+                                strUri = imageController.registrationMediaStrage(uri).toString();
+                                cv.put("uri",strUri);
                             }
-                            // TODO アラームの設定
-                            reservationAlarm((int)db.insert("alarms",null,cv),alarmName,hour,minute,"");
+
+                            int newId = (int)db.insert("alarms",null,cv);
+                            reservationAlarm(newId,alarmName,hour,minute,strUri);
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -327,6 +332,9 @@ public class InputAlarmActivity extends AppCompatActivity {
                                     }catch (Exception e){
                                         e.printStackTrace();
                                     }
+
+                                    // アラームを解除
+                                    cancelAlarm(alarmIDForDelete);
                                     //削除メッセージ
                                     Toast.makeText(InputAlarmActivity.this,R.string.action_delete_message,Toast.LENGTH_SHORT).show();
 
@@ -389,12 +397,15 @@ public class InputAlarmActivity extends AppCompatActivity {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        //TODO 実際にセットするように戻す
-        //calendar.set(Calendar.HOUR_OF_DAY, hour);
-        //calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
 
-        //まずはサンプル！ 5秒後にアラームが設定されるように決め打ち
-        calendar.add(Calendar.SECOND, 5);
+        // 既に過ぎている場合は翌日に設定
+        Calendar nowCalendar = Calendar.getInstance();
+        if (calendar.compareTo(nowCalendar) <= 0) {
+            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
+        }
         //ブロードキャストレシーバーのIntentコールをおこなう設定（アラーム通知クラスをコールする）
         Intent intent = new Intent(getApplicationContext(), AlarmNotification.class);
         intent.putExtra("alarm_id",alarmID);
@@ -405,20 +416,31 @@ public class InputAlarmActivity extends AppCompatActivity {
         Log.d("InputAlarmActivity","alarmID=" + String.valueOf(alarmID));
 
         pending = PendingIntent.getBroadcast(
-                getApplicationContext(),alarmID, intent, 0);
+                getApplicationContext(),alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // アラームをセットする
         am = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         if (am != null) {
-            am.setExact(AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(), pending);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                am.setExact(AlarmManager.RTC_WAKEUP,
+                        calendar.getTimeInMillis(), pending);
+            } else {
+                am.set(AlarmManager.RTC_WAKEUP,
+                        calendar.getTimeInMillis(), pending);
+            }
         }
 
     }
 
     private void cancelAlarm(int alarmID){
-
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), AlarmNotification.class);
+        PendingIntent pending = PendingIntent.getBroadcast(
+                getApplicationContext(), alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (am != null) {
+            am.cancel(pending);
+        }
     }
 
 
